@@ -28,16 +28,52 @@
 # alerta = alert.alertaEstoque(60)
 # print(alerta)
 
+# import estoque 
+# opcao = input('1 - Adicionar Produto\n2 - Listar Produtos\n3 - Sair\n')
+# produtos = [
+#     {
+#         "nome": "Mouse",
+#         "preco": 50,
+#         "quantidade": 10
+#     },
+#     {
+#         "nome": "Teclado",
+#         "preco": 100,
+#         "quantidade": 80
+#     }
+# ]
+# while (opcao != '3'):
+#     if opcao == '1':
+
+#         nome = input('Digite o nome do produto: ')
+#         preco = float(input('Digite o preço do produto: '))
+#         quantidade = int(input('Digite a quantidade do produto: '))
+
+#         estoque.adicionarProduto(produtos,nome, preco, quantidade)
+
+#     if opcao == '2':
+#         estoque.listarProdutos(produtos)
 
 
+#     opcao = input('1 - Adicionar Produto\n2 - Listar Produtos\n3 - Sair\n')
 
 
+# import pyttsx3
 
+# robo = pyttsx3.init()
 
+# voices = robo.getProperty('voices')
+# robo.setProperty('voice', voices[0].id)
+# robo.say("Olá mundo")
 
+# robo.runAndWait()
 
+import pyqrcode
 
-
+link = 'https://api.whatsapp.com/send/?phone=5585985421274&text&type=phone_number&app_absent=0'
+qr = pyqrcode.create(link)
+qr.png('qrcodeWhatsapp.png',scale=6)
+print('QRcode gerado com sucesso')
 
 
 
