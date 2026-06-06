@@ -33,6 +33,14 @@ def atualizarDados(tabela,id,dados):
     except Exception as erro:
         print(f'Erro ao atualizar os dados: {erro}')
 
+# Deletar dados
+def deletarDados(tabela,id):
+    try:
+        resposta = supabase.table(tabela).delete().eq('id',id).execute()
+        print('Dados deletados com sucesso')
+        print(resposta)
+    except Exception as erro:
+        print(f'Erro ao deletar os dados: {erro}')
 
 def coletarDadosInserir():
     opcao = input('Selecione uma opção:\n1 - Inserir Usuario\n2 - Inserir Perfil\n3 - Inserir Autor\n4 - Inserir Livro\n5 - Inserir Empréstimo\n')
@@ -106,7 +114,7 @@ def coletarDadosInserir():
         inserirDadosTabelas(tabela,novoEmprestimo)
 
 
-def atualizarDados():
+def coletarDadosAtuais():
     print('Qual tabela você quer atualizar?')
     tabelas = {
         "1":"biblioteca_usuarios",
@@ -116,7 +124,7 @@ def atualizarDados():
         "5":"biblioteca_emprestimo"
     }
     camposTabela = {
-        "biblioteca_usuarios":["nome","cpf","endereco","ativo"],
+        "biblioteca_usuarios":["nome","cpf","endereco","telefone","ativo"],
         "biblioteca_perfil":["foto",'bio','preferencias'],
         "biblioteca_autor":["nome","genero","nacionalidade"],
         "biblioteca_livro":["titulo","quantidade","genero","ano"],
@@ -128,17 +136,49 @@ def atualizarDados():
 
     opcao = input('Digite a opcao desejada: ')
     tabelaSelecionada = tabelas[opcao]
+    
     resposta = supabase.table(tabelaSelecionada).select('*').execute()
 
     print('Selecione o ID que você quer atualizar')
 
     for resposta in resposta.data:
-        print("################################")
+        print("###################################################")
         for chave, valor in resposta.items():
             print(f'{chave} - {valor}')
     id = input('Digite o ID que você quer atualizar: ')
+    restposta = supabase.table(tabelaSelecionada).select('*').eq('id',id).execute()
+    novosDados = {}
+    for campo in camposTabela[tabelaSelecionada]:
+        print(f'Valor atual do {campo} = {resposta[campo]}')
+        novosDados[campo] = input(f'Novo valor = ')
+    print(novosDados)
+    atualizarDados(tabelaSelecionada,id,novosDados)
 
-    print(tabelaSelecionada)
+def coletarDadosDeletar():
+    print('De qual tabela você quer deletar?')
+    tabelas = {
+        "1":"biblioteca_usuarios",
+        "2":"biblioteca_perfil",
+        "3":"biblioteca_autor",
+        "4":"biblioteca_livro",
+        "5":"biblioteca_emprestimo"
+    }
+    for chave, valor in tabelas.items():
+        print(f'{chave} - {valor}')
+    opcao = input('Digite a tabela: ')
+    tabelaSelecionada = tabelas[opcao]
+    resposta = supabase.table(tabelaSelecionada).select('*').execute()
 
-atualizarDados()
+    print('Selecione o ID que você quer deletar')
+
+    for resposta in resposta.data:
+        print("###################################################")
+        for chave, valor in resposta.items():
+            print(f'{chave} - {valor}')
+    id = input('Digite o ID que você quer deletar: ')
+
+    deletarDados(tabelaSelecionada,id)
+
+# coletarDadosDeletar()
+# coletarDadosAtuais()
 # coletarDadosInserir()
