@@ -16,30 +16,23 @@ supabase_url = os.getenv('SUPABASE_URL')
 supabase_key = os.getenv('SUPABASE_KEY')
 supabase = create_client(supabase_url,supabase_key) #
 # CRUD
+
 # Inserir os dados nas tabelas
-def inserirUsuario():
-    nome = input('Digite o nome: ')
-    cpf = input('Digite o cpf: ')
-    telefone = input('Digite o Telefone: ')
-    endereco = input('Digite o endereço: ')
-    novoUsuario = {
-        "nome":nome,
-        "cpf":cpf,
-        "telefone":telefone,
-        "endereco":endereco
-    }
-    resposta = supabase.table('biblioteca_usuarios').insert(novoUsuario).execute()
-    print(resposta)
-
-# inserirUsuario()
-
 def inserirDadosTabelas(tabela,dados):
     try:
         resposta = supabase.table(tabela).insert(dados).execute()
         print('Dados inseridos com sucesso')
     except Exception as erro:
         print(f'Erro ao inserir os dados: {erro}')
-    
+
+# Atualizar dados tabela:
+def atualizarDados(tabela,id,dados):
+    try:
+        resposta = supabase.table(tabela).update(dados).eq('id',id).execute()
+        print('Dados atualizados com sucesso')
+    except Exception as erro:
+        print(f'Erro ao atualizar os dados: {erro}')
+
 
 def coletarDadosInserir():
     opcao = input('Selecione uma opção:\n1 - Inserir Usuario\n2 - Inserir Perfil\n3 - Inserir Autor\n4 - Inserir Livro\n5 - Inserir Empréstimo\n')
@@ -113,7 +106,39 @@ def coletarDadosInserir():
         inserirDadosTabelas(tabela,novoEmprestimo)
 
 
+def atualizarDados():
+    print('Qual tabela você quer atualizar?')
+    tabelas = {
+        "1":"biblioteca_usuarios",
+        "2":"biblioteca_perfil",
+        "3":"biblioteca_autor",
+        "4":"biblioteca_livro",
+        "5":"biblioteca_emprestimo"
+    }
+    camposTabela = {
+        "biblioteca_usuarios":["nome","cpf","endereco","ativo"],
+        "biblioteca_perfil":["foto",'bio','preferencias'],
+        "biblioteca_autor":["nome","genero","nacionalidade"],
+        "biblioteca_livro":["titulo","quantidade","genero","ano"],
+        "emprestimo":["data_devolucao"]
+    }
 
+    for chave, valor in tabelas.items():
+        print(f'{chave} - {valor}')
 
+    opcao = input('Digite a opcao desejada: ')
+    tabelaSelecionada = tabelas[opcao]
+    resposta = supabase.table(tabelaSelecionada).select('*').execute()
 
-coletarDadosInserir()
+    print('Selecione o ID que você quer atualizar')
+
+    for resposta in resposta.data:
+        print("################################")
+        for chave, valor in resposta.items():
+            print(f'{chave} - {valor}')
+    id = input('Digite o ID que você quer atualizar: ')
+
+    print(tabelaSelecionada)
+
+atualizarDados()
+# coletarDadosInserir()
